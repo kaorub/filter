@@ -1,0 +1,27 @@
+html {
+  font-weight: 400;
+}
+body {
+  /*background-color: rgba(0, 0, 0, 0.5);*/
+  padding-bottom: 70px;
+  padding-top: 70px;
+  vertical-align: middle;
+  display: flex;
+  font-family: 'Noto Sans', sans-serif;
+}
+header {
+	font-size: 2em;
+  color: #333333;
+}
+.centered {
+	align-items: center;
+	justify-content: center;
+}
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*background-color: #FFFFFF;*/
+  float: none;
+  margin: 0 auto;
+}

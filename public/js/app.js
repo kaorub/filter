@@ -3,22 +3,43 @@
 	// TODO service
 
 	angular.module('app', [])
+	.service('getData', ['$http', function($http) {
+		$http.get('/public/ajax/main.json')
+		.success(function(data) {
+			$scope.rows = data;
+			return;
+		})
+		.error(function(data, status, headers, config) {
+			return false;
+		})
+	}])
 	.filter('offset', function() {
 	  return function(input, start) {
 	    start = parseInt(start, 10);
 	    return input.slice(start);
 	  };
 	})
-	.controller("PaginationCtrl", function($scope, $http) {
+	.controller("PaginationCtrl", function($scope, $http, $filter) {
 		$scope.rowsPerPage = 10;
 		$scope.currentPage = 0;
 		$scope.gap = 5;
-
+		$scope.rows = [];
+		$scope.path = [];
+		$scope.resultList = {};
+// setGraph methods
+		$scope.setPath = function(point) {
+			if (point) this.path.push(point);
+			$scope.displayedRows = $scope.filteredRows;
+		}	
+		$scope.showPath = function() {
+			console.log("it works");
+			$filter('filter')($scope.displayedRows);
+		}
 		$http({method: 'GET', url: '/public/ajax/main.json'})
 		.success(function(data) {
 			$scope.rows = data;
 		});
-
+// Pagination methods
 	  	$scope.prevPage = function() {
 		    if ($scope.currentPage > 0) {
 		    	$scope.currentPage--;
@@ -71,18 +92,35 @@
 	    $scope.range = function () {
 	        var ret = [];
 	        
-	        var start = 5 * Math.floor10($scope.currentPage/5, 0);
-	        console.log(start);
+	        var start = $scope.gap * Math.floor10($scope.currentPage/$scope.gap, 0);
 	        if (start > $scope.rows.length - $scope.gap) {
 	            start = $scope.rows.length - $scope.gap;
 	        }
 	        for (var i = start; i < $scope.gap + start; i++) {
 	            ret.push(i);
 	        }        
-	         
-	        console.log(ret);        
 	        return ret;
     	};
+// End Pagination methods
 
 	})
+	// .directive('searchGraph', function() {
+	// 	return {
+	// 		// restrict: 'E',
+	// 		// require: 'ngModel',
+	// 		link: function(scope, elem, attr, ctrl) {
+	// 			scope.$watch(attr.searchGraph, function(value) {
+	// 				elem.html(value)
+	// 				// angular.forEach()
+	// 				// return value;
+	// 			});
+	// 			// ctrl.$parsers.unshift(function() {
+
+	// 			// })
+	// 		}
+	// 		// compile: function(temlateElement, templateAttrs) {
+	// 		// 	templateElement.append('<div>{{' + templateAttrs.)
+	// 		// }
+	// 	}
+	// })
 })()

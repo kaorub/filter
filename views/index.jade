@@ -10,6 +10,12 @@ html
 body(ng-app='app')
 	noscript Please enable Javascript to experience this site :)
 	div.section(ng-controller='PaginationCtrl')
+		//- search-graph(search-graph='[search.id, search.position, search.quality, search.comment]')
+		nav.horizontal-menu
+			ul.list-inline(ng-repeat='point in path track by $index')
+				li
+					a.btn.btn-default(role='button', ref='#', ng-click='showPath()') {{point}}
+		//- div.btn-group(role='group')
 		table.table.table-bordered
 			thead
 				tr
@@ -21,27 +27,28 @@ body(ng-app='app')
 				tr
 					ul.pagination.text-centered
 						li(ng-class='prevPageDisabled()')
-							a(href ng-click='prevPage();') &laquo
+							a(href, ng-click='prevPage();') &laquo
 						li(ng-repeat='n in range();', ng-class='{active: n == currentPage}', ng-click='setPage(n)')
 							a(href='#') {{n+1}}
 						li(ng-class='nextPageDisabled()')
-							a(href ng-click='nextPage();') &raquo
+							a(href, ng-click='nextPage();') &raquo
 			tbody
 				tr
 					td
-						input(ng-model='search.id')
+						input(ng-model='search.id', ng-keydown='ifRange();', ng-blur='setPath(search.id)')
 					td
-						input(ng-model='search.position')
+						input(ng-model='search.position', ng-blur='setPath(search.position)')
 					td
-						input(ng-model='search.quality')
+						input(ng-model='search.quality', ng-blur='setPath(search.quality)')
 					td
-						input(ng-model='search.comment')
-				tr(ng-repeat='row in rows | filter:search:strict | offset: currentPage*rowsPerPage | limitTo: rowsPerPage')
+						input(ng-model='search.comment', ng-blur='setPath(search.comment)')
+				tr(ng-repeat='row in filteredRows = (rows | filter:search:strict | offset: currentPage*rowsPerPage | limitTo: rowsPerPage)')
 					td {{row.id}}
 					td {{row.position}}
 					td {{row.quality}}
 					td {{row.comment}}
 	script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js')
 	script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+	script(src='//d3js.org/d3.v3.min.js', charset='utf-8')
 	script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
 	script(src='/public/js/app.js')
